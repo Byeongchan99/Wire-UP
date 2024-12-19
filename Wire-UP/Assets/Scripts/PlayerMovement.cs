@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Tooltip("Swing speed")]
     public float swingSpeed; // 스윙 속도
-    private bool isSwingEnded = false;
+    public bool isSwingEnded = false; // 스윙 종료 여부(로프를 연결하여 스윙 액션을 실행한 후 로프를 해제한 상태)
 
     private float _targetRotation = 0.0f;
     private float _rotationVelocity;
@@ -275,7 +275,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (_isMantling)
         {
-            Debug.Log("맨틀 중");
+            //Debug.Log("맨틀 중");
             return;
         }
 
@@ -289,7 +289,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// 애니메이션 ID를 할당
+    /// 애니메이션 ID 할당
     /// </summary>
     private void AssignAnimationIDs()
     {
@@ -315,19 +315,6 @@ public class PlayerMovement : MonoBehaviour
             Jump();
 
             //Invoke(nameof(ResetJump), jumpCooldown);
-        }
-       
-        // start crouch
-        if (Input.GetKeyDown(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-        }
-
-        // stop crouch
-        if (Input.GetKeyUp(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         }
         */
     }
@@ -364,15 +351,6 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.mantling;
         }
-
-        /*
-        // Mode - Crouching
-        else if (Input.GetKey(crouchKey))
-        {
-            state = MovementState.crouching;
-            moveSpeed = crouchSpeed;
-        }
-        */
 
         // Mode - Sprinting
         else if (grounded && _input.sprint)
@@ -480,7 +458,10 @@ public class PlayerMovement : MonoBehaviour
 
                 // 기존 속도와 약간의 방향 전환만 허용
                 // 여기서는 원하는 만큼 정교하게 blending 할 수 있다.
-                _rigidbody.velocity = Vector3.Lerp(currentVelocity, desiredVelocity, 0.001f);
+                float currentWeight = 0.8f; // currentVelocity의 가중치
+                float desiredWeight = 1 - currentWeight; // desiredVelocity의 가중치
+                _rigidbody.velocity = (currentVelocity * currentWeight) + (desiredVelocity * desiredWeight);
+
                 return; // 기존 return 대신 약간의 조정만 하고 함수 종료
             }
             else
@@ -519,15 +500,6 @@ public class PlayerMovement : MonoBehaviour
             _animator.SetFloat(_animIDSpeed, moveSpeed);
             _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
         }
-    }
-
-
-    /// <summary>
-    /// Swing the player
-    /// </summary>
-    private void SwingMovePlayer()
-    {
-        //Debug.Log("스윙 중");
     }
 
     /// <summary>

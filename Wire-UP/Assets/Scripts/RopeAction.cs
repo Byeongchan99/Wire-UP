@@ -49,7 +49,8 @@ public class RopeAction : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && aimMode == true && characterController.swinging == false)
+        // 공중에서 연속으로 스윙 불가능 - 나중에 밸런스 조절
+        if (Input.GetMouseButtonDown(0) && aimMode == true && characterController.swinging == false && characterController.isSwingEnded == false)
         {
             Debug.Log("StartGrapple");
             StartGrapple();
