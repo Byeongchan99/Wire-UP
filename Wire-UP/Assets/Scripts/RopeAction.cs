@@ -28,6 +28,7 @@ public class RopeAction : MonoBehaviour
     //public float extendCableSpeed;
     public float forceMultiplier;
     public bool connectedRope;
+    public bool canGrapple;
 
     [Header("Cooldown")]
     public float grapplingCd;
@@ -49,8 +50,17 @@ public class RopeAction : MonoBehaviour
 
     private void Update()
     {
+        if (aimMode == true && characterController.swinging == false && characterController.isSwingEnded == false)
+        {
+            canGrapple = true;
+        }
+        else
+        {
+            canGrapple = false;
+        }
+
         // 공중에서 연속으로 스윙 불가능 - 나중에 밸런스 조절
-        if (Input.GetMouseButtonDown(0) && aimMode == true && characterController.swinging == false && characterController.isSwingEnded == false)
+        if (Input.GetMouseButtonDown(0) && canGrapple)
         {
             Debug.Log("StartGrapple");
             StartGrapple();

@@ -17,7 +17,7 @@ public class AimModeCrosshair : MonoBehaviour
             Ray ray = ropeAction.cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, ropeAction.maxGrappleDistance, ropeAction.whatIsGrappleable))
+            if (Physics.Raycast(ray, out hit, ropeAction.maxGrappleDistance, ropeAction.whatIsGrappleable) && ropeAction.canGrapple)
             {
                 crosshair.color = Color.green;
             }
