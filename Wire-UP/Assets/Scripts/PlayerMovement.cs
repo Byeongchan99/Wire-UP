@@ -404,7 +404,9 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             isSlope = false;
-            _rigidbody.useGravity = true;
+
+            if (!_isMantling)
+                _rigidbody.useGravity = true;
         }
     }
 
@@ -562,7 +564,8 @@ public class PlayerMovement : MonoBehaviour
             // 점프 입력 처리
             if (_currentJumpInput && readyToJump && grounded)
             {
-                exitingSlope = true;
+                if (isSlope)
+                    exitingSlope = true;
                 _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
                 readyToJump = false; // 재점프 방지
@@ -687,26 +690,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// 점프 속도 계산
-    /// </summary>
-    /// <param name="startPoint">시작 지점</param>
-    /// <param name="endPoint">끝 지점</param>
-    /// <param name="trajectoryHeight">궤적 높이</param>
-    /// <returns>계산된 속도</returns>
-    public Vector3 CalculateJumpVelocity(Vector3 startPoint, Vector3 endPoint, float trajectoryHeight)
-    {
-        float gravity = Physics.gravity.y;
-        float displacementY = endPoint.y - startPoint.y;
-        Vector3 displacementXZ = new Vector3(endPoint.x - startPoint.x, 0f, endPoint.z - startPoint.z);
-
-        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
-        Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity)
-            + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
-
-        return velocityXZ + velocityY;
-    }
-
-    /// <summary>
     /// 디버그용 기즈모 그리기
     /// </summary>
     void OnDrawGizmos()
@@ -828,6 +811,7 @@ public class PlayerMovement : MonoBehaviour
         if (hitDetected)
         {
             // 2. 충돌 지점에서 위로 이동한 후 아래 방향으로 트레이스
+
             Vector3 downwardRayStart = hit.point + Vector3.up * maxLedgeHeight + transform.forward * 0.2f;
 
             Debug.DrawRay(downwardRayStart, Vector3.down * maxLedgeHeight, Color.green, 0.5f);
@@ -886,12 +870,17 @@ public class PlayerMovement : MonoBehaviour
             _animator.SetBool(_animIDMantle, true);
         }
 
-        Vector3 startPosition = targetMantlePosition + (transform.up * -1f) + (transform.forward * -0.4f); // 시작 위치 조정
+        _rigidbody.useGravity = false; // 중력 비활성화
+        _verticalVelocity = 0f;
+
+        Vector3 startPosition = targetMantlePosition + (transform.up * -1f) + (transform.forward * -0.5f); // 시작 위치 조정
+        transform.position = startPosition;
+
         float elapsedTime = 0f;
 
         // 첫 번째 단계: 위로 이동
         float firstPhaseDuration = 17f / 30f; // 약 0.567초
-        Vector3 firstPhaseTarget = startPosition + transform.up * 1f;
+        Vector3 firstPhaseTarget = startPosition + transform.up * 1.1f;
         while (elapsedTime < firstPhaseDuration)
         {
             transform.position = Vector3.Lerp(startPosition, firstPhaseTarget, elapsedTime / firstPhaseDuration);
@@ -901,7 +890,7 @@ public class PlayerMovement : MonoBehaviour
 
         // 두 번째 단계: 앞으로 이동
         float secondPhaseDuration = 8f / 30f; // 약 0.267초
-        Vector3 secondPhaseTarget = firstPhaseTarget + transform.forward * 0.4f;
+        Vector3 secondPhaseTarget = firstPhaseTarget + transform.forward * 0.5f;
         elapsedTime = 0f;
         while (elapsedTime < secondPhaseDuration)
         {
@@ -920,6 +909,8 @@ public class PlayerMovement : MonoBehaviour
         {
             _animator.SetBool(_animIDMantle, false);
         }
+
+        _rigidbody.useGravity = true; // 중력 활성화
         yield return null;
     }
 
