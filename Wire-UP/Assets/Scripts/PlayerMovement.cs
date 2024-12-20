@@ -488,6 +488,10 @@ public class PlayerMovement : MonoBehaviour
         else if (grounded)
         {
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+
+            if (!isSlope)
+                _verticalVelocity = 0f;
+
             _rigidbody.velocity = targetDirection.normalized * (moveSpeed * inputMagnitude) + new Vector3(0.0f, _rigidbody.velocity.y, 0.0f);
         }
         // 공중 이동
@@ -554,7 +558,7 @@ public class PlayerMovement : MonoBehaviour
                 _animator.SetBool(_animIDJump, false);
                 _animator.SetBool(_animIDFreeFall, false);
             }
-
+        
             // 수직 속도 안정화
             if (_verticalVelocity < 0.0f && !downDirection)
             {
