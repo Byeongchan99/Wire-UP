@@ -444,32 +444,31 @@ public class PlayerMovement : MonoBehaviour
 
         // --- 수정 부분 시작 ---
         // 스윙 종료 후 공중 이동을 약간 허용하는 로직
+        // --- 수정된 부분: 스윙 종료 후 공중 이동을 "AddForce"로 처리 ---
         if (isSwingEnded)
         {
-            // 스윙 관성 유지: 현재 Rigidbody velocity를 그대로 두되,
-            // 입력에 따른 추가 이동속도 반영은 축소한다.
-
-            // 예를 들어 공중에서 이동 영향도를 30%만 적용
-            float reducedAirControl = 0.8f;
             if (!grounded)
             {
-                Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-                Vector3 currentVelocity = _rigidbody.velocity;
-                Vector3 desiredVelocity = targetDirection.normalized * (moveSpeed * inputMagnitude * reducedAirControl)
-                                          + new Vector3(0.0f, currentVelocity.y, 0.0f);
+                // 현재 관성(velocity)는 그대로 두고, 입력 방향으로만 '약간' Force를 가함
+                Vector3 forceDirection = new Vector3(_currentMoveInput.x, 0, _currentMoveInput.y);
+                forceDirection = Quaternion.Euler(0.0f, _mainCamera.transform.eulerAngles.y, 0.0f)
+                                 * forceDirection.normalized;
 
-                // 기존 속도와 약간의 방향 전환만 허용
-                // 여기서는 원하는 만큼 정교하게 blending 할 수 있다.
-                float currentWeight = 0.8f; // currentVelocity의 가중치
-                float desiredWeight = 1 - currentWeight; // desiredVelocity의 가중치
-                _rigidbody.velocity = (currentVelocity * currentWeight) + (desiredVelocity * desiredWeight);
+                // 이동력을 어느 정도 줄지 배율을 조정
+                float reducedAirControlMultiplier = 0.00001f;
+                Vector3 finalForce = forceDirection * (moveSpeed * inputMagnitude * reducedAirControlMultiplier);
 
-                return; // 기존 return 대신 약간의 조정만 하고 함수 종료
+                // 캐릭터에 힘을 가해 공중에서 조금만 움직이도록
+                _rigidbody.AddForce(finalForce * Time.deltaTime, ForceMode.Force);
+
+                // 관성 + 중력 그대로 유지 → velocity 직접 세팅 X
+                // 함수 종료
+                return;
             }
             else
             {
-                // 바닥에 닿았으면 isSwingEnded 초기화는 다른 곳에서 이뤄질테니 이 부분은 크게 문제되지 않음
-                // 지상에서는 정상 로직 수행(아래 로직 진행)
+                // 바닥에 닿았다면 이후에는 기본 로직 진행
+                // (isSwingEnded를 초기화할 로직이 별도로 있다면 OK)
             }
         }
         // --- 수정 부분 끝 ---
