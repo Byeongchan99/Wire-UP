@@ -2568,6 +2568,10 @@ PrefabInstance:
       propertyPath: m_Drag
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6384401870154746440, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6546742977270448028, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}
       propertyPath: aimCam
       value: 
@@ -2625,8 +2629,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9200994135988767621}
     - target: {fileID: 7793043114112297720, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}
+      propertyPath: playerMovement
+      value: 
+      objectReference: {fileID: 9200994135988767624}
+    - target: {fileID: 7793043114112297720, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}
       propertyPath: forceMultiplier
-      value: 0.00005
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 8292718411601089993, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}
       propertyPath: m_Name
@@ -2998,6 +3006,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd51e7c95c20c1e41a190a6a9f718db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9200994135988767624 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8363037963914674013, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}
+  m_PrefabInstance: {fileID: 8230600477297183946}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d4850f98d4df344da13e38436095e38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
