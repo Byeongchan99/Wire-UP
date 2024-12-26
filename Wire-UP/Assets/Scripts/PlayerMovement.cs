@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jumping Settings")]
     [Tooltip("Height of the jump")]
     public float JumpHeight = 1.2f; // 점프 높이
+    public float jumpForce = 10.0f; // 점프 힘
 
     [Tooltip("Cooldown time between jumps")]
     public float jumpCooldown; // 점프 쿨다운 시간
@@ -48,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
     private bool readyToJump; // 점프 준비 상태
 
     [Tooltip("Gravity applied to the player")]
-    public float Gravity = -15.0f; // 중력 값
+    public float Gravity = -50f; // 중력 값
 
     private bool _currentJumpInput;
 
@@ -281,6 +282,8 @@ public class PlayerMovement : MonoBehaviour
 
         MovePlayer(); // 플레이어 이동 처리
         Jump(); // 점프 처리
+
+        _rigidbody.AddForce(Vector3.down * -Gravity);
     }
 
     private void LateUpdate()
@@ -455,7 +458,7 @@ public class PlayerMovement : MonoBehaviour
                                  * forceDirection.normalized;
 
                 // 이동력을 어느 정도 줄지 배율을 조정
-                float reducedAirControlMultiplier = 0.00001f;
+                float reducedAirControlMultiplier = 0.001f;
                 Vector3 finalForce = forceDirection * (moveSpeed * inputMagnitude * reducedAirControlMultiplier);
 
                 // 캐릭터에 힘을 가해 공중에서 조금만 움직이도록
@@ -568,8 +571,12 @@ public class PlayerMovement : MonoBehaviour
             if (_currentJumpInput && readyToJump && grounded)
             {
                 if (isSlope)
+                {
                     exitingSlope = true;
-                _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                }
+
+                //_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
 
                 readyToJump = false; // 재점프 방지
                 _jumpTimeoutDelta = JumpTimeout; // 쿨다운 타이머 초기화
@@ -616,6 +623,13 @@ public class PlayerMovement : MonoBehaviour
                 ResetJump();
         }
 
+        // 최대 낙하 속도 제한
+        if (_verticalVelocity < _maxFallVelocity && !grounded)
+        {
+            _verticalVelocity = _maxFallVelocity;
+        }
+
+        /*
         // 중력 적용
         if (_verticalVelocity > _maxFallVelocity && !grounded)
         {
@@ -624,6 +638,7 @@ public class PlayerMovement : MonoBehaviour
 
         // 속도 적용
         _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, _verticalVelocity, _rigidbody.velocity.z);
+        */
     }
 
     /// <summary>

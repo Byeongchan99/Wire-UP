@@ -2369,6 +2369,14 @@ PrefabInstance:
       value: 0.003
       objectReference: {fileID: 0}
     - target: {fileID: 1205023513688037382, guid: a0436a1ef8dc9d749b03d412e1d84b8b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205023513688037382, guid: a0436a1ef8dc9d749b03d412e1d84b8b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205023513688037382, guid: a0436a1ef8dc9d749b03d412e1d84b8b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.291
       objectReference: {fileID: 0}
@@ -2639,6 +2647,14 @@ PrefabInstance:
     - target: {fileID: 8292718411601089993, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}
       propertyPath: m_Name
       value: PlayerArmature2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8363037963914674013, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}
+      propertyPath: Gravity
+      value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 8363037963914674013, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}
+      propertyPath: jumpForce
+      value: 35
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7519034968024423090, guid: 10a40696cd361db47bd1b36acdd28e2f, type: 3}

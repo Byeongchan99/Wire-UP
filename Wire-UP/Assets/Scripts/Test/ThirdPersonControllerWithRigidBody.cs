@@ -187,10 +187,8 @@ public class ThirdPersonControllerWithRigidbody : MonoBehaviour
     private void GroundedCheck()
     {
         // set sphere position, with offset
-        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
-            transform.position.z);
-        Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
-            QueryTriggerInteraction.Ignore);
+        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
+        Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
 
         // update animator if using character
         if (_hasAnimator)
@@ -201,7 +199,7 @@ public class ThirdPersonControllerWithRigidbody : MonoBehaviour
 
     private void GroundedAndWallCheck()
     {
-        // set sphere position, with offset
+        // 지면을 검사할 구체 위치 설정
         Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
 
         // 바닥 체크
@@ -233,12 +231,12 @@ public class ThirdPersonControllerWithRigidbody : MonoBehaviour
 
                 if (angle < 60f)
                 {
-                    // 60도 이하의 각도: 바닥으로 간주
+                    // 60도 이하의 각도면 바닥
                     isGrounded = true;
                 }
                 else if (angle >= 60f && angle < 120f)
                 {
-                    // 60도 이상 120도 미만의 각도: 벽으로 간주
+                    // 60도 이상 120도 미만의 각도면 벽
                     isTouchingWall = true;
                 }
             }
@@ -339,7 +337,8 @@ public class ThirdPersonControllerWithRigidbody : MonoBehaviour
             if (_input.jump && _jumpTimeoutDelta <= 0.0f && Grounded && !WallAttached)
             {
                 // 점프 로직 - 바닥에 붙어 있는 경우에만 점프 가능
-                _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                //_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                _rigidbody.AddForce(Vector3.up * Mathf.Sqrt(JumpHeight * -2f * Gravity), ForceMode.VelocityChange);
 
                 // update animator if using character
                 if (_hasAnimator)
@@ -377,6 +376,13 @@ public class ThirdPersonControllerWithRigidbody : MonoBehaviour
             _input.jump = false;
         }
 
+        // 최대 낙하 속도 제한
+        if (_verticalVelocity < _terminalVelocity)
+        {
+            _verticalVelocity = _terminalVelocity;
+        }
+
+        /*
         // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
         if (_verticalVelocity < _terminalVelocity)
         {
@@ -384,6 +390,7 @@ public class ThirdPersonControllerWithRigidbody : MonoBehaviour
         }
 
         _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, _verticalVelocity, _rigidbody.velocity.z);
+        */
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
