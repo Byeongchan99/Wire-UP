@@ -19,7 +19,8 @@ public class JumpPad : MonoBehaviour
         {
             Rigidbody rb = collision.gameObject.GetComponent<Rigidbody>();
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-            StartCoroutine(JumpOverTime(rb, _jumpForce));
+            //StartCoroutine(JumpOverTime(rb, _jumpForce));
+            rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
         }
     }
 
