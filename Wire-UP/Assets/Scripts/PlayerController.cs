@@ -24,7 +24,6 @@ public class PlayerController : MonoBehaviour
     public bool freeze; // 플레이어 움직임이 멈췄는지 여부
 
     [Header("Speed Cotrol")]
-    private float _verticalVelocity; // 수직 속도
     private float _maxFallVelocity = -15.0f; // 최대 낙하 속도
 
     [Header("Jumping")]
@@ -55,6 +54,7 @@ public class PlayerController : MonoBehaviour
     public float groundCheckBoxSize = 0.1f;
 
     [Header("Slope Handling")]
+    public float stickForce; // 경사면에서 지면 검사를 위한 힘
     public float maxSlopeAngle; // 플레이어가 걸을 수 있는 최대 경사 각도
     private RaycastHit slopeHit; // 경사면 정보를 담는 변수
     private bool exitingSlope; // 경사면에서 벗어나는 중인지 여부
@@ -149,6 +149,13 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         CheckSlope(); // 경사면 체크
+
+        if (isGrounded && OnSlope())
+        {
+            // 너무 큰 값이 아니도록 조심 (예: 1~20 선에서 테스트)
+            _rigidbody.AddForce(Vector3.down * stickForce, ForceMode.Acceleration);
+        }
+
         MovePlayer();
     }
 
@@ -171,7 +178,7 @@ public class PlayerController : MonoBehaviour
     // 지면 검사
     public void IsGrounded()
     {
-        Vector3 boxSize = new Vector3(0.1f, 0.1f, 0.1f);
+        Vector3 boxSize = new Vector3(0.1f, groundCheckBoxSize, 0.1f);
         isGrounded = Physics.CheckBox(transform.position, boxSize, Quaternion.identity, GroundLayers);
 
         // 바닥에 닿았을 때 스윙 종료 상태 초기화
@@ -189,7 +196,7 @@ public class PlayerController : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawCube(transform.position, new Vector3(0.1f, 0.1f, 0.1f));
+        Gizmos.DrawCube(transform.position, new Vector3(0.1f, groundCheckBoxSize, 0.1f));
     }
 
     private void PlayerInput()
@@ -299,11 +306,13 @@ public class PlayerController : MonoBehaviour
         if (_currentMoveInput == Vector2.zero)
         {
             moveSpeed = 0.0f;
+            /*
             // 경사면 미끄러짐 방지
             if (isSlope && downDirection)
             {
-                _verticalVelocity = 0f;
+                //_rigidbody.velocity.y = 0;
             }
+            */
         }
 
         float inputMagnitude = _input.analogMovement ? _currentMoveInput.magnitude : 1f;
@@ -340,7 +349,8 @@ public class PlayerController : MonoBehaviour
         // on slope
         if (OnSlope() && !exitingSlope)
         {
-            _rigidbody.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+            _rigidbody.velocity = GetSlopeMoveDirection() * moveSpeed * inputMagnitude;
+            //_rigidbody.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
 
             if (_rigidbody.velocity.y > 0)
                 _rigidbody.AddForce(Vector3.down * 80f, ForceMode.Force);
@@ -348,7 +358,17 @@ public class PlayerController : MonoBehaviour
 
         // on ground
         else if (isGrounded)
-            _rigidbody.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        {
+            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+
+            /*
+            if (!isSlope)
+                _verticalVelocity = 0f;
+            */
+
+            _rigidbody.velocity = targetDirection.normalized * (moveSpeed * inputMagnitude) + new Vector3(0.0f, _rigidbody.velocity.y, 0.0f);
+            //_rigidbody.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        }
 
         // in air
         else if (!isGrounded)
@@ -527,7 +547,7 @@ public class PlayerController : MonoBehaviour
         }
 
         _rigidbody.useGravity = false; // 중력 비활성화
-        _verticalVelocity = 0f;
+        //_verticalVelocity = 0f;
 
         Vector3 startPosition = targetMantlePosition + (transform.up * -1f) + (transform.forward * -0.5f); // 시작 위치 조정
         transform.position = startPosition;
