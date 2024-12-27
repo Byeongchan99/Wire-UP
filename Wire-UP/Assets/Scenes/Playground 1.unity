@@ -3083,7 +3083,7 @@ MonoBehaviour:
   swingSpeed: 11
   groundDrag: 2
   freeze: 0
-  jumpForce: 30
+  jumpForce: 8
   jumpCooldown: 0.1
   airMultiplier: 0.8
   fallTimeout: 0.15
@@ -3101,7 +3101,7 @@ MonoBehaviour:
     m_Bits: 9
   isGrounded: 0
   groundCheckBoxSize: 0.1
-  maxSlopeAngle: 0
+  maxSlopeAngle: 60
   isSlope: 0
   upDirection: 0
   downDirection: 0

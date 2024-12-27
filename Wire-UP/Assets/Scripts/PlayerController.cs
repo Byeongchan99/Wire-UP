@@ -208,7 +208,7 @@ public class PlayerController : MonoBehaviour
         {
             readyToJump = false;
             Jump();
-            Invoke(nameof(ResetJump), jumpCooldown);
+            StartCoroutine(ResetJumpCoroutine());
         }
     }
 
@@ -320,6 +320,7 @@ public class PlayerController : MonoBehaviour
 
         if (!isGrounded && isSwingEnded)
         {
+            /*
             // 현재 관성(velocity)는 그대로 두고, 입력 방향으로만 '약간' Force를 가함
             Vector3 forceDirection = new Vector3(_currentMoveInput.x, 0, _currentMoveInput.y);
             forceDirection = Quaternion.Euler(0.0f, _mainCamera.transform.eulerAngles.y, 0.0f) * forceDirection.normalized;
@@ -330,6 +331,9 @@ public class PlayerController : MonoBehaviour
 
             // 캐릭터에 힘을 가해 공중에서 조금만 움직이도록
             _rigidbody.AddForce(finalForce * Time.deltaTime, ForceMode.Force);
+            return;
+            */
+            _rigidbody.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
             return;
         }
 
@@ -388,8 +392,32 @@ public class PlayerController : MonoBehaviour
 
         // reset y velocity
         _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
-
         _rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+        // 애니메이터 업데이트
+        if (_hasAnimator)
+        {
+            _animator.SetBool(_animIDJump, true);
+        }
+    }
+
+    IEnumerator ResetJumpCoroutine()
+    {
+        // fallTimeoutDelta 후에 JumpAnimation
+        yield return new WaitForSeconds(_fallTimeoutDelta);
+        JumpAnimation();
+
+        // jumpCooldown 후에 ResetJump
+        yield return new WaitForSeconds(jumpCooldown);
+        ResetJump();
+    }
+
+    private void JumpAnimation()
+    {
+        if (_hasAnimator)
+        {
+            _animator.SetBool(_animIDFreeFall, true);
+        }
     }
 
     private void ResetJump()
@@ -397,6 +425,12 @@ public class PlayerController : MonoBehaviour
         _currentJumpInput = false;
         readyToJump = true;
         exitingSlope = false;
+
+        if (_hasAnimator)
+        {
+            _animator.SetBool(_animIDJump, false);
+            _animator.SetBool(_animIDFreeFall, false);
+        }
     }
 
     public void OnSwingEnd()
