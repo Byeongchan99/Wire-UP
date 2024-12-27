@@ -21,7 +21,8 @@ public class PlayerNewInput : MonoBehaviour
 
     [Header("Character Controller Reference")]
     //public ThirdPersonControllerWithMantle characterController; // 캐릭터 컨트롤러 참조
-    public PlayerMovement characterController;
+    //public PlayerMovement characterController;
+    public PlayerController playerController;
 
     [Header("Mantle Settings")]
     private bool mantleAttempted = false;  // 맨틀 동작 시도를 추적하기 위한 플래그
@@ -48,11 +49,11 @@ public class PlayerNewInput : MonoBehaviour
             mantleAttempted = true;
 
             // 점프가 입력되었을 때 컨트롤러에서 Mantle 가능 여부를 체크
-            if (characterController.CanPerformMantle())
+            if (playerController.CanPerformMantle())
             {
                 //Debug.Log("Mantle");
                 MantleInput(true);
-                characterController.StartMantle();
+                playerController.StartMantle();
             }
             else
             {

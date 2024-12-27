@@ -283,7 +283,7 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer(); // 플레이어 이동 처리
         Jump(); // 점프 처리
 
-        _rigidbody.AddForce(Vector3.down * -Gravity);
+        //_rigidbody.AddForce(Vector3.down * -Gravity); // 중력 적용
     }
 
     private void LateUpdate()

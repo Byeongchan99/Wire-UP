@@ -10,7 +10,8 @@ public class RopeAction : MonoBehaviour
     public Transform gunTip;
     public LayerMask whatIsGrappleable;
     private LineRenderer _lineRenderer;
-    public PlayerMovement playerMovement;
+    //public PlayerMovement playerMovement;
+    public PlayerController playerController;
     public Transform playerTransform;
     public Rigidbody playerRb;
     public PlayerNewInput _input;
@@ -40,7 +41,7 @@ public class RopeAction : MonoBehaviour
 
     private void Update()
     {
-        if (aimMode == true && playerMovement.swinging == false && playerMovement.isSwingEnded == false)
+        if (aimMode == true && playerController.isSwinging == false && playerController.isSwingEnded == false)
         {
             canGrapple = true;
         }
@@ -60,7 +61,7 @@ public class RopeAction : MonoBehaviour
             _grapplingCooldownTimer -= Time.deltaTime;
 
         // 중간에 그래플링 멈추기
-        if (Input.GetMouseButtonUp(0) && playerMovement.swinging)
+        if (Input.GetMouseButtonUp(0) && playerController.isSwinging)
         {
             StopGrapple();
         }
@@ -69,7 +70,7 @@ public class RopeAction : MonoBehaviour
     private void FixedUpdate()
     {
         // FixedUpdate에서 스윙 처리
-        if (playerMovement.swinging && _joint != null && !playerMovement.grounded)
+        if (playerController.isSwinging && _joint != null && !playerController.isGrounded)
         {           
             airMovement();     
         }
@@ -117,18 +118,18 @@ public class RopeAction : MonoBehaviour
             _lineRenderer.SetPosition(1, _grapplePoint);
             _lineRenderer.enabled = true;
 
-            playerMovement.swinging = true;
+            playerController.isSwinging = true;
             _connectedRope = true;
         }       
     }
 
     public void StopGrapple()
     {
-        playerMovement.swinging = false;
+        playerController.isSwinging = false;
         _connectedRope = false;
 
         // 스윙 종료 처리
-        playerMovement.OnSwingEnd();
+        playerController.OnSwingEnd();
 
         // SpringJoint 제거
         if (_joint != null)
