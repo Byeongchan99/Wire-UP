@@ -329,7 +329,7 @@ public class PlayerController : MonoBehaviour
 
         if (!isGrounded && isSwingEnded)
         {
-            
+            /*
             // 현재 관성(velocity)는 그대로 두고, 입력 방향으로만 '약간' Force를 가함
             Vector3 forceDirection = new Vector3(_currentMoveInput.x, 0, _currentMoveInput.y);
             forceDirection = Quaternion.Euler(0.0f, _mainCamera.transform.eulerAngles.y, 0.0f) * forceDirection.normalized;
@@ -341,11 +341,12 @@ public class PlayerController : MonoBehaviour
             // 캐릭터에 힘을 가해 공중에서 조금만 움직이도록
             _rigidbody.AddForce(finalForce * Time.deltaTime, ForceMode.Force);
             return;
-            
-            /*
-            _rigidbody.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-            return;
             */
+
+            
+            _rigidbody.AddForce(moveDirection.normalized * moveSpeed * 5f * airMultiplier, ForceMode.Force);
+            return;
+            
         }
 
         // on slope
@@ -374,7 +375,7 @@ public class PlayerController : MonoBehaviour
 
         // in air
         else if (!isGrounded)
-            _rigidbody.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            _rigidbody.AddForce(moveDirection.normalized * moveSpeed * 5f * airMultiplier, ForceMode.Force);
 
         if (_hasAnimator)
         {
@@ -385,9 +386,7 @@ public class PlayerController : MonoBehaviour
 
     private void SpeedControl()
     {
-        if (isSwinging) return;
-
-        if (!isGrounded) return; // 여기 수정했음
+        if (isSwinging || isSwingEnded) return;
 
         // limiting speed on slope
         if (OnSlope() && !exitingSlope)

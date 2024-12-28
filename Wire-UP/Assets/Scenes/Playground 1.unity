@@ -3104,7 +3104,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 9
   isGrounded: 0
-  groundCheckBoxSize: 0.15
+  groundCheckBoxSize: 0.1
   stickForce: 0
   maxSlopeAngle: 60
   isSlope: 0
