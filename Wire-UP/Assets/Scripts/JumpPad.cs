@@ -4,14 +4,8 @@ using UnityEngine;
 
 public class JumpPad : MonoBehaviour
 {
-    private BoxCollider _boxColider;
     [SerializeField] private float _jumpForce = 100f; // 점프패드에서 플레이어가 점프할 때 가해지는 힘의 세기
     [SerializeField] private float _jumpDuration = 0.5f; // 점프패드에서 플레이어가 점프할 때 가해지는 힘의 지속시간
-
-    void Start()
-    {
-        _boxColider = GetComponent<BoxCollider>();
-    }
 
     private void OnCollisionEnter(Collision collision)
     {

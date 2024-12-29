@@ -9,80 +9,76 @@ public class PlayerController : MonoBehaviour
     private PlayerInput _playerInput;
     private Animator _animator;
     private Rigidbody _rigidbody;
-    private PlayerNewInput _input;
+    private PlayerNewInput _input; // 유니티 인풋 시스템
     private GameObject _mainCamera;
 
     [Header("Movement")]
-    [SerializeField] private float moveSpeed;
+    [SerializeField] private float _moveSpeed; // 이동 속도
     public float walkSpeed;
     public float sprintSpeed;
     public float swingSpeed;
-    public float groundDrag;
-    Vector3 moveDirection;
+    public float groundDrag; // 지면 마찰력
+    private Vector3 _moveDirection;
     private Vector2 _currentMoveInput;
-    private bool _currentJumpInput;
-    public bool freeze; // 플레이어 움직임이 멈췄는지 여부
-
-    [Header("Speed Cotrol")]
-    private float _maxFallVelocity = -15.0f; // 최대 낙하 속도
+    private bool _didJumpInput;
+    public bool isFreeze; // 플레이어 움직임이 멈췄는지 여부
 
     [Header("Jumping")]
     public float jumpForce;
     public float jumpCooldown;
-    public float airMultiplier; // 공중에서의 이동 속도 배율
-    public float fallTimeout = 0.15f;
-    bool readyToJump;
-    private float _jumpCooldownDelta;
-    private float _fallTimeoutDelta;
+    private bool _canJump;
+    public float airSpeedMultiplier; // 공중에서의 이동 속도 배율
+    public float fallTimeout = 0.15f; // 공중에서 낙하 모션으로 전환되는 시간
+    private float _fallTimeoutTimer; // 낙하 타이머
 
     [Header("Swinging")]
     public bool isSwinging; // 스윙 중인지 여부 - 로프를 발사하여 물체와 연결되어 있는 상태
-    public bool isSwingEnded = false; // 스윙 종료 직후 여부(바닥에 닿기 전)
+    public bool isjustSwingEnded = false; // 스윙 종료 직후 여부(바닥에 닿기 전)
 
     [Header("Mantling")]
     private bool _isMantling = false; // 맨틀 중인지 여부
-    public LayerMask mantleLayerMask;  // 맨틀 가능한 레이어 설정
-    public float rayHeight = 0.9f;  // 트레이스 시작 높이
+    public LayerMask mantleLayers;  // 맨틀 가능한 레이어 설정
+    public float frontRayHeight = 0.9f;  // 트레이스 시작 높이
     public float maxReachDistance = 0.5f;  // 전방 트레이스 최대 거리
     public float maxLedgeHeight = 0.9f;  // 맨틀 가능한 장애물 최대 높이
-    private Vector3 targetMantlePosition; // 맨틀할 목표 위치
+    private Vector3 _targetMantlePosition; // 맨틀할 목표 위치
 
     [Header("Ground Check")]
     public Transform playerCenter; // 플레이어의 중심 위치
-    public LayerMask GroundLayers;
+    public LayerMask groundLayers; // 지면 레이어 마스크
     public bool isGrounded;
     public float groundCheckBoxSize = 0.1f;
 
     [Header("Slope Handling")]
     public float stickForce; // 경사면에서 지면 검사를 위한 힘
     public float maxSlopeAngle; // 플레이어가 걸을 수 있는 최대 경사 각도
-    private RaycastHit slopeHit; // 경사면 정보를 담는 변수
-    private bool exitingSlope; // 경사면에서 벗어나는 중인지 여부
+    private RaycastHit _slopeRayHit; // 경사면 정보를 담는 변수
+    private bool _isExitingSlope; // 경사면에서 벗어나는 중인지 여부
     public bool isSlope; // 현재 경사면 위에 있는지 여부
-    public bool upDirection; // 경사면을 올라가는 중인지 여부
-    public bool downDirection; // 경사면을 내려가는 중인지 여부
+    public bool isUpDirection; // 경사면을 올라가는 중인지 여부
+    public bool isDownDirection; // 경사면을 내려가는 중인지 여부
 
     [Header("Camera")]
-    private float _targetRotation = 0.0f;
-    private float _rotationVelocity;
+    private float _targetRotation = 0.0f; // 플레이어 목표 회전값
+    private float _rotationVelocity; // 카메라 회전 속도
     [Range(0.0f, 0.3f)]
-    public float RotationSmoothTime = 0.12f; // 회전 속도 스무딩 시간
-    public float TopClamp = 70.0f; // 카메라의 최대 위쪽 각도
-    public float BottomClamp = -30.0f; // 카메라의 최대 아래쪽
-    public float CameraAngleOverride = 0.0f; // 카메라에 추가로 적용되는 각도
-    public bool LockCameraPosition = false; // 카메라 위치 고정 여부
+    public float rotationSmoothTime = 0.12f; // 회전 속도 스무딩 시간
+    public float topMaxClamp = 70.0f; // 카메라의 최대 위쪽 각도
+    public float bottomMaxClamp = -30.0f; // 카메라의 최대 아래쪽
+    public float cameraAngleOverride = 0.0f; // 카메라에 추가로 적용되는 각도
+    public bool isLockCameraPosition = false; // 카메라 위치 고정 여부
     private const float _threshold = 0.01f; // 입력 감도 임계값
 
     // 시네머신 세팅
-    public GameObject CinemachineCameraTarget; // 시네머신 카메라 타겟
+    public GameObject cinemachineCameraTarget; // 시네머신 카메라 타겟
     private float _cinemachineTargetYaw; // 카메라의 Yaw 값
     private float _cinemachineTargetPitch; // 카메라의 Pitch 값
 
     [Header("Audio")]
-    public AudioClip LandingAudioClip; // 착지 사운드 클립
-    public AudioClip[] FootstepAudioClips; // 발소리 사운드 클립 배열
+    public AudioClip landingAudioClip; // 착지 사운드 클립
+    public AudioClip[] footstepAudioClips; // 발소리 사운드 클립 배열
     [Range(0, 1)]
-    public float FootstepAudioVolume = 0.5f; // 발소리 볼륨
+    public float footstepAudioVolume = 0.5f; // 발소리 볼륨
 
     [Header("Animation IDs")]
     private int _animIDSpeed;
@@ -119,17 +115,16 @@ public class PlayerController : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.freezeRotation = true;
 
-        readyToJump = true;
+        _canJump = true;
 
         _hasAnimator = TryGetComponent(out _animator);
         _input = GetComponent<PlayerNewInput>();
 
-        _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+        _cinemachineTargetYaw = cinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
         AssignAnimationIDs(); // 애니메이션 ID 할당
 
-        _jumpCooldownDelta = jumpCooldown;
-        _fallTimeoutDelta = fallTimeout;
+        _fallTimeoutTimer = fallTimeout;
     }
 
     private void Update()
@@ -139,7 +134,7 @@ public class PlayerController : MonoBehaviour
         SpeedControl();
         StateHandler();
 
-        // handle drag
+        // 마찰력 설정
         if (isGrounded && !isSwinging)
             _rigidbody.drag = groundDrag;
         else
@@ -150,9 +145,10 @@ public class PlayerController : MonoBehaviour
     {
         CheckSlope(); // 경사면 체크
 
-        if (isGrounded && OnSlope())
+        // 경사로에 있지만 지면에 있지 않을 때 힘을 가해줌
+        if (!isGrounded && OnSlope() && !_isExitingSlope)
         {
-            // 너무 큰 값이 아니도록 조심 (예: 1~20 선에서 테스트)
+            // 너무 큰 값이 아니도록 조심
             _rigidbody.AddForce(Vector3.down * stickForce, ForceMode.Acceleration);
         }
 
@@ -179,12 +175,12 @@ public class PlayerController : MonoBehaviour
     public void IsGrounded()
     {
         Vector3 boxSize = new Vector3(0.1f, groundCheckBoxSize, 0.1f);
-        isGrounded = Physics.CheckBox(transform.position, boxSize, Quaternion.identity, GroundLayers);
+        isGrounded = Physics.CheckBox(transform.position, boxSize, Quaternion.identity, groundLayers);
 
         // 바닥에 닿았을 때 스윙 종료 상태 초기화
-        if (isGrounded && isSwingEnded)
+        if (isGrounded && isjustSwingEnded)
         {
-            isSwingEnded = false;
+            isjustSwingEnded = false;
         }
 
         if (_animator)
@@ -208,12 +204,12 @@ public class PlayerController : MonoBehaviour
         }
 
         _currentMoveInput = _input.move;
-        _currentJumpInput = _input.jump;
+        _didJumpInput = _input.jump;
 
         // 점프 입력
-        if (_currentJumpInput && readyToJump && isGrounded)
+        if (_didJumpInput && _canJump && isGrounded)
         {
-            readyToJump = false;
+            _canJump = false;
             Jump();
             StartCoroutine(ResetJumpCoroutine());
         }
@@ -221,49 +217,49 @@ public class PlayerController : MonoBehaviour
 
     private void StateHandler()
     {
-        // Mode - Freeze
-        if (freeze)
+        // 정지
+        if (isFreeze)
         {
             state = MovementState.freeze;
-            moveSpeed = 0;
+            _moveSpeed = 0;
             _rigidbody.velocity = Vector3.zero;
         }
 
-        // Mode - Swinging
+        // 스윙
         else if (isSwinging && !isGrounded)
         {
             state = MovementState.swinging;
-            moveSpeed = swingSpeed;
+            _moveSpeed = swingSpeed;
         }
 
-        // Mode - Mantling
+        // 맨틀
         else if (_input.mantle)
         {
             state = MovementState.mantling;
         }
 
-        // Mode - Sprinting
+        // 달리기
         else if (isGrounded && _input.sprint)
         {
             state = MovementState.sprinting;
-            moveSpeed = sprintSpeed;
+            _moveSpeed = sprintSpeed;
         }
 
-        // Mode - Walking
+        // 걷기
         else if (isGrounded)
         {
             state = MovementState.walking;
-            moveSpeed = walkSpeed;
+            _moveSpeed = walkSpeed;
         }
 
-        // Mode - Air
+        // 공중
         else
         {
             state = MovementState.air;
             if (_input.sprint)
-                moveSpeed = sprintSpeed * airMultiplier;
+                _moveSpeed = sprintSpeed * airSpeedMultiplier;
             else
-                moveSpeed = walkSpeed * airMultiplier;
+                _moveSpeed = walkSpeed * airSpeedMultiplier;
         }
     }
 
@@ -277,13 +273,13 @@ public class PlayerController : MonoBehaviour
 
             if (slopeMoveDirection.y >= 0)
             {
-                upDirection = true;
-                downDirection = false;
+                isUpDirection = true;
+                isDownDirection = false;
             }
             else
             {
-                downDirection = true;
-                upDirection = false;
+                isDownDirection = true;
+                isUpDirection = false;
             }
 
             isSlope = true;
@@ -305,29 +301,22 @@ public class PlayerController : MonoBehaviour
         // 이동 입력이 없을 때
         if (_currentMoveInput == Vector2.zero)
         {
-            moveSpeed = 0.0f;
-            /*
-            // 경사면 미끄러짐 방지
-            if (isSlope && downDirection)
-            {
-                //_rigidbody.velocity.y = 0;
-            }
-            */
+            _moveSpeed = 0.0f;
         }
 
         float inputMagnitude = _input.analogMovement ? _currentMoveInput.magnitude : 1f;
         Vector3 inputDirection = new Vector3(_currentMoveInput.x, 0.0f, _currentMoveInput.y).normalized;
-        moveDirection = Quaternion.Euler(0, _mainCamera.transform.eulerAngles.y, 0) * inputDirection;
+        _moveDirection = Quaternion.Euler(0, _mainCamera.transform.eulerAngles.y, 0) * inputDirection;
 
         // 플레이어 회전
         if (_currentMoveInput != Vector2.zero)
         {
-            _targetRotation = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
-            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity, RotationSmoothTime);
+            _targetRotation = Mathf.Atan2(_moveDirection.x, _moveDirection.z) * Mathf.Rad2Deg;
+            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity, rotationSmoothTime);
             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
         }
 
-        if (!isGrounded && isSwingEnded)
+        if (!isGrounded && isjustSwingEnded)
         {
             /*
             // 현재 관성(velocity)는 그대로 두고, 입력 방향으로만 '약간' Force를 가함
@@ -342,68 +331,61 @@ public class PlayerController : MonoBehaviour
             _rigidbody.AddForce(finalForce * Time.deltaTime, ForceMode.Force);
             return;
             */
-
-            
-            _rigidbody.AddForce(moveDirection.normalized * moveSpeed * 5f * airMultiplier, ForceMode.Force);
-            return;
-            
+       
+            _rigidbody.AddForce(_moveDirection.normalized * _moveSpeed * 5f * airSpeedMultiplier, ForceMode.Force);
+            return;        
         }
 
         // on slope
-        if (OnSlope() && !exitingSlope)
+        if (OnSlope() && !_isExitingSlope)
         {
-            _rigidbody.velocity = GetSlopeMoveDirection() * moveSpeed * inputMagnitude;
+            _rigidbody.velocity = GetSlopeMoveDirection() * _moveSpeed * inputMagnitude;
             //_rigidbody.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
 
             if (_rigidbody.velocity.y > 0)
                 _rigidbody.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
 
-        // on ground
+        // 지면에서
         else if (isGrounded)
         {
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
-            /*
-            if (!isSlope)
-                _verticalVelocity = 0f;
-            */
-
-            _rigidbody.velocity = targetDirection.normalized * (moveSpeed * inputMagnitude) + new Vector3(0.0f, _rigidbody.velocity.y, 0.0f);
+            _rigidbody.velocity = targetDirection.normalized * (_moveSpeed * inputMagnitude) + new Vector3(0.0f, _rigidbody.velocity.y, 0.0f);
             //_rigidbody.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         }
 
-        // in air
+        // 공중에서
         else if (!isGrounded)
-            _rigidbody.AddForce(moveDirection.normalized * moveSpeed * 5f * airMultiplier, ForceMode.Force);
+            _rigidbody.AddForce(_moveDirection.normalized * _moveSpeed * 10f * airSpeedMultiplier, ForceMode.Force);
 
         if (_hasAnimator)
         {
-            _animator.SetFloat(_animIDSpeed, moveSpeed);
+            _animator.SetFloat(_animIDSpeed, _moveSpeed);
             _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
         }
     }
 
     private void SpeedControl()
     {
-        if (isSwinging || isSwingEnded) return;
+        if (isSwinging || isjustSwingEnded) return;
 
-        // limiting speed on slope
-        if (OnSlope() && !exitingSlope)
+        // 경사로에서의 속도 제어
+        if (OnSlope() && !_isExitingSlope)
         {
-            if (_rigidbody.velocity.magnitude > moveSpeed)
-                _rigidbody.velocity = _rigidbody.velocity.normalized * moveSpeed;
+            if (_rigidbody.velocity.magnitude > _moveSpeed)
+                _rigidbody.velocity = _rigidbody.velocity.normalized * _moveSpeed;
         }
 
-        // limiting speed on ground or in air
+        // 지면 또는 공중에서의 속도 제어
         else
         {
             Vector3 flatVel = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
 
             // limit velocity if needed
-            if (flatVel.magnitude > moveSpeed)
+            if (flatVel.magnitude > _moveSpeed)
             {
-                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                Vector3 limitedVel = flatVel.normalized * _moveSpeed;
                 _rigidbody.velocity = new Vector3(limitedVel.x, _rigidbody.velocity.y, limitedVel.z);
             }
         }
@@ -411,7 +393,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        exitingSlope = true;
+        _isExitingSlope = true;
 
         // reset y velocity
         _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
@@ -427,7 +409,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator ResetJumpCoroutine()
     {
         // fallTimeoutDelta 후에 JumpAnimation
-        yield return new WaitForSeconds(_fallTimeoutDelta);
+        yield return new WaitForSeconds(_fallTimeoutTimer);
         JumpAnimation();
 
         // jumpCooldown 후에 ResetJump
@@ -445,9 +427,9 @@ public class PlayerController : MonoBehaviour
 
     private void ResetJump()
     {
-        _currentJumpInput = false;
-        readyToJump = true;
-        exitingSlope = false;
+        _didJumpInput = false;
+        _canJump = true;
+        _isExitingSlope = false;
 
         if (_hasAnimator)
         {
@@ -458,7 +440,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnSwingEnd()
     {
-        isSwingEnded = true;
+        isjustSwingEnded = true;
     }
 
     public bool CanPerformMantle()
@@ -470,7 +452,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // 1. 전방 트레이스: 캐릭터의 중심에서 약간 뒤쪽으로 시작해서 장애물 감지
-        Vector3 rayStartCenter = transform.position + transform.forward * -0.1f + Vector3.up * rayHeight;
+        Vector3 rayStartCenter = transform.position + transform.forward * -0.1f + Vector3.up * frontRayHeight;
         Vector3 rayDirection = transform.forward;
         float verticalOffset = 0.1f;
 
@@ -486,9 +468,9 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
 
         // 중심, 위, 아래 레이 중 하나라도 충돌하면 히트로 간주
-        if (Physics.Raycast(rayStartCenter, rayDirection, out hit, maxReachDistance, mantleLayerMask) ||
-            Physics.Raycast(rayStartUpper, rayDirection, out hit, maxReachDistance, mantleLayerMask) ||
-            Physics.Raycast(rayStartLower, rayDirection, out hit, maxReachDistance, mantleLayerMask))
+        if (Physics.Raycast(rayStartCenter, rayDirection, out hit, maxReachDistance, mantleLayers) ||
+            Physics.Raycast(rayStartUpper, rayDirection, out hit, maxReachDistance, mantleLayers) ||
+            Physics.Raycast(rayStartLower, rayDirection, out hit, maxReachDistance, mantleLayers))
         {
             hitDetected = true;
         }
@@ -514,12 +496,12 @@ public class PlayerController : MonoBehaviour
                         capsulePosition + Vector3.up * capsuleRadius,
                         capsulePosition + Vector3.up * (capsuleHeight - capsuleRadius),
                         0.05f,
-                        mantleLayerMask
+                        mantleLayers
                     );
 
                     if (hasRoom)
                     {
-                        targetMantlePosition = downwardHit.point;
+                        _targetMantlePosition = downwardHit.point;
                         return true; // 맨틀 가능
                     }
                     /*
@@ -552,7 +534,7 @@ public class PlayerController : MonoBehaviour
         _rigidbody.useGravity = false; // 중력 비활성화
         //_verticalVelocity = 0f;
 
-        Vector3 startPosition = targetMantlePosition + (transform.up * -1f) + (transform.forward * -0.5f); // 시작 위치 조정
+        Vector3 startPosition = _targetMantlePosition + (transform.up * -1f) + (transform.forward * -0.5f); // 시작 위치 조정
         transform.position = startPosition;
 
         float elapsedTime = 0f;
@@ -579,7 +561,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // 최종 위치로 설정
-        transform.position = targetMantlePosition;
+        transform.position = _targetMantlePosition;
 
         _isMantling = false;
         _input.MantleInput(false);
@@ -595,9 +577,9 @@ public class PlayerController : MonoBehaviour
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, 0.2f))
+        if (Physics.Raycast(transform.position, Vector3.down, out _slopeRayHit, 0.2f))
         {
-            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            float angle = Vector3.Angle(Vector3.up, _slopeRayHit.normal);
             return angle < maxSlopeAngle && angle != 0;
         }
 
@@ -607,12 +589,12 @@ public class PlayerController : MonoBehaviour
     // 경사면 이동 방향
     private Vector3 GetSlopeMoveDirection()
     {
-        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+        return Vector3.ProjectOnPlane(_moveDirection, _slopeRayHit.normal).normalized;
     }
 
     private void CameraRotation()
     {
-        if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+        if (_input.look.sqrMagnitude >= _threshold && !isLockCameraPosition)
         {
             float deltaTimeMultiplier = 1.0f;
             _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
@@ -620,9 +602,9 @@ public class PlayerController : MonoBehaviour
         }
 
         _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, bottomMaxClamp, topMaxClamp);
 
-        CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride, _cinemachineTargetYaw, 0.0f);
+        cinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + cameraAngleOverride, _cinemachineTargetYaw, 0.0f);
     }
 
     private static float ClampAngle(float angle, float min, float max)
@@ -637,10 +619,10 @@ public class PlayerController : MonoBehaviour
     {
         if (animationEvent.animatorClipInfo.weight > 0.5f)
         {
-            if (FootstepAudioClips.Length > 0)
+            if (footstepAudioClips.Length > 0)
             {
-                var index = Random.Range(0, FootstepAudioClips.Length);
-                AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.position, FootstepAudioVolume);
+                var index = Random.Range(0, footstepAudioClips.Length);
+                AudioSource.PlayClipAtPoint(footstepAudioClips[index], transform.position, footstepAudioVolume);
             }
         }
     }
@@ -650,7 +632,7 @@ public class PlayerController : MonoBehaviour
     {
         if (animationEvent.animatorClipInfo.weight > 0.5f)
         {
-            AudioSource.PlayClipAtPoint(LandingAudioClip, transform.position, FootstepAudioVolume);
+            AudioSource.PlayClipAtPoint(landingAudioClip, transform.position, footstepAudioVolume);
         }
     }
 }

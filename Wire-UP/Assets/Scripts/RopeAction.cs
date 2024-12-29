@@ -10,7 +10,6 @@ public class RopeAction : MonoBehaviour
     public Transform gunTip;
     public LayerMask whatIsGrappleable;
     private LineRenderer _lineRenderer;
-    //public PlayerMovement playerMovement;
     public PlayerController playerController;
     public Transform playerTransform;
     public Rigidbody playerRb;
@@ -41,7 +40,7 @@ public class RopeAction : MonoBehaviour
 
     private void Update()
     {
-        if (aimMode == true && playerController.isSwinging == false && playerController.isSwingEnded == false)
+        if (aimMode == true && playerController.isSwinging == false && playerController.isjustSwingEnded == false)
         {
             canGrapple = true;
         }
