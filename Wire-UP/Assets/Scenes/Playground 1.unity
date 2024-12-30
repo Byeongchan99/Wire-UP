@@ -2646,6 +2646,10 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8545003323560373556, guid: 54d186620d9856540a19127d7e660f5b, type: 3}
+      propertyPath: maxAirSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8545003323560373556, guid: 54d186620d9856540a19127d7e660f5b, type: 3}
       propertyPath: jumpCooldown
       value: 0.15
       objectReference: {fileID: 0}

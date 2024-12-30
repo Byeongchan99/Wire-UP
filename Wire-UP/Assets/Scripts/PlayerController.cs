@@ -23,6 +23,10 @@ public class PlayerController : MonoBehaviour
     private bool _didJumpInput;
     public bool isFreeze; // 플레이어 움직임이 멈췄는지 여부
 
+    [Header("Speed Control")]
+    public float currentSpeed; // 현재 속도
+    public float maxAirSpeed; // 공중에서의 최대 속도
+
     [Header("Jumping")]
     public float jumpForce;
     public float jumpCooldown;
@@ -331,9 +335,28 @@ public class PlayerController : MonoBehaviour
             _rigidbody.AddForce(finalForce * Time.deltaTime, ForceMode.Force);
             return;
             */
-       
+
+            /*
             _rigidbody.AddForce(_moveDirection.normalized * _moveSpeed * 5f * airSpeedMultiplier, ForceMode.Force);
-            return;        
+            return;    
+            */
+
+            Vector3 currentVelocity = _rigidbody.velocity;
+            currentSpeed = new Vector3(currentVelocity.x, 0f, currentVelocity.z).magnitude;
+
+            if (currentSpeed < maxAirSpeed)
+            {
+                // 속도가 아직 최대치 미만인 경우에만 힘을 준다.
+                float speedDiff = maxAirSpeed - currentSpeed;
+                float factor = speedDiff / maxAirSpeed;  // [0..1]
+
+                // factor가 1에 가까울수록 많이, 0에 가까울수록 적게
+                float forceMultiplier = 10f * factor;
+
+                _rigidbody.AddForce(_moveDirection.normalized * _moveSpeed * forceMultiplier * airSpeedMultiplier, ForceMode.Force);
+            }
+
+            return;
         }
 
         // on slope
