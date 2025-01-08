@@ -108,7 +108,7 @@ public class RopeAction : MonoBehaviour
             joint.minDistance = distanceFromPoint;
             */
 
-            _joint.spring = 5f;
+            _joint.spring = 10f;
             _joint.damper = 50f;
             _joint.massScale = 1f;
 
