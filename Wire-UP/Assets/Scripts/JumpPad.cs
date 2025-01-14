@@ -6,6 +6,7 @@ public class JumpPad : MonoBehaviour
 {
     [SerializeField] private float _jumpForce = 100f; // 점프패드에서 플레이어가 점프할 때 가해지는 힘의 세기
     [SerializeField] private float _jumpDuration = 0.5f; // 점프패드에서 플레이어가 점프할 때 가해지는 힘의 지속시간
+    public ParticleSystem jumpParticle;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -14,6 +15,7 @@ public class JumpPad : MonoBehaviour
             Rigidbody rb = collision.gameObject.GetComponent<Rigidbody>();
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             //StartCoroutine(JumpOverTime(rb, _jumpForce));
+            jumpParticle.Play();
             rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
         }
     }
