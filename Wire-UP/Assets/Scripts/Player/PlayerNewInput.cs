@@ -19,13 +19,16 @@ public class PlayerNewInput : MonoBehaviour
     public bool cursorLocked = true;
     public bool cursorInputForLook = true;
 
-    [Header("Character Controller Reference")]
+    [Header("Player Controller Reference")]
     //public ThirdPersonControllerWithMantle characterController; // 캐릭터 컨트롤러 참조
     //public PlayerMovement characterController;
     public PlayerController playerController;
 
     [Header("Mantle Settings")]
     private bool mantleAttempted = false;  // 맨틀 동작 시도를 추적하기 위한 플래그
+
+    [Header("UI Settings")]
+    public bool pause;
 
 #if ENABLE_INPUT_SYSTEM
     public void OnMove(InputValue value)
@@ -74,6 +77,11 @@ public class PlayerNewInput : MonoBehaviour
     {
         SprintInput(value.isPressed);
     }
+
+    public void OnPause(InputValue value)
+    {
+        PauseInput(value.isPressed);
+    }
 #endif
 
     public void MoveInput(Vector2 newMoveDirection)
@@ -100,6 +108,18 @@ public class PlayerNewInput : MonoBehaviour
     public void SprintInput(bool newSprintState)
     {
         sprint = newSprintState;
+    }
+
+    public void PauseInput(bool newPauseState)
+    {
+        if (GameManager.instance.isPaused) // 현재 일시정지 상태라면
+        {
+            GameManager.instance.ResumeGame();
+        }
+        else
+        {
+            GameManager.instance.PauseGame();
+        }
     }
 
     private void OnApplicationFocus(bool hasFocus)

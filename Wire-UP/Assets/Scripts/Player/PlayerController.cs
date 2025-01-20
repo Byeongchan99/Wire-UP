@@ -617,6 +617,8 @@ public class PlayerController : MonoBehaviour
 
     private void CameraRotation()
     {
+        if (GameManager.instance.isPaused) return;
+
         if (_input.look.sqrMagnitude >= _threshold && !isLockCameraPosition)
         {
             float deltaTimeMultiplier = 1.0f;

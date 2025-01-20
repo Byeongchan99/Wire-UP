@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerHat : MonoBehaviour
 {
     public GameObject hat;
-    public GameManager gameManager;
 
     private void Start()
     {
@@ -16,7 +15,7 @@ public class PlayerHat : MonoBehaviour
     public void PickUpHat()
     {
         hat.SetActive(true);
-        gameManager.OnGameClear(); // 게임 클리어
+        GameManager.instance.OnGameClear(); // 게임 클리어
     }
 
     public void PutDownHat()

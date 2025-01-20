@@ -7,17 +7,17 @@ public class Timer : MonoBehaviour
 {
     public Text timerText;         // 시간 표시용 UI Text
     private float elapsedTime;     // 경과 시간(초)
-    private bool isPaused = false; // 일시정지 여부
 
     private void Start()
     {
         timerText = GetComponent<Text>();
+        ResetTimer();
     }
 
     void Update()
     {
         // 일시정지 상태가 아닐 때만 시간 증가
-        if (!isPaused)
+        if (!GameManager.instance.isPaused)
         {
             elapsedTime += Time.deltaTime;
             UpdateTimerUI();
@@ -34,18 +34,6 @@ public class Timer : MonoBehaviour
 
         // "00:00:00" 형식으로 맞춰주기
         timerText.text = string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, seconds);
-    }
-
-    /// 타이머 일시정지
-    public void PauseTimer()
-    {
-        isPaused = true;
-    }
-
-    /// 타이머 다시 시작
-    public void ResumeTimer()
-    {
-        isPaused = false;
     }
 
     /// 타이머 리셋
