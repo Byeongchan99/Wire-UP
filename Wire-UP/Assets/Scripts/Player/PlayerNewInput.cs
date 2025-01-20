@@ -115,10 +115,14 @@ public class PlayerNewInput : MonoBehaviour
         if (GameManager.instance.isPaused) // 현재 일시정지 상태라면
         {
             GameManager.instance.ResumeGame();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         else
         {
             GameManager.instance.PauseGame();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 

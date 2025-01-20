@@ -54,7 +54,7 @@ public class FullscreenUIManager : MonoBehaviour
         }
 
         // 메인 화면
-        Push("Main");
+        //Push("Main");
     }
 
     /// <summary> FullscreenUI 인스턴스들을 딕셔너리에 등록하는 메서드 </summary>
@@ -131,5 +131,15 @@ public class FullscreenUIManager : MonoBehaviour
     public void OnPushFullscreenUI(string UIName)
     {
         Push(UIName);
+    }
+
+    public void OnPause()
+    {
+        Push("Pause");
+    }
+
+    public void OnResume()
+    {
+        Pop();
     }
 }

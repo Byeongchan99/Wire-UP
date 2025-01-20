@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance; // 싱글톤을 할당할 전역 변수
     public PlayerHat playerHat;
+    public FullscreenUIManager fullscreenUIManager;
+    public HUDManager HUDManager;
+
     public bool isPaused = false; // 일시정지 여부
 
     private void Awake()
@@ -49,11 +52,13 @@ public class GameManager : MonoBehaviour
     {
         isPaused = true;
         Time.timeScale = 0f; // 시간 흐름을 멈춤
+        fullscreenUIManager.OnPause();
     }
 
     public void ResumeGame()
     {
         isPaused = false;
         Time.timeScale = 1f; // 정상 속도로 돌아옴
+        fullscreenUIManager.OnResume();
     }
 }
