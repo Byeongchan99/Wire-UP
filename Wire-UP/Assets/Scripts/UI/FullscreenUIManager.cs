@@ -52,9 +52,6 @@ public class FullscreenUIManager : MonoBehaviour
             RegisterUI(fullscreen.gameObject.name, fullscreen);
             fullscreen.gameObject.SetActive(false);
         }
-
-        // 메인 화면
-        //Push("Main");
     }
 
     /// <summary> FullscreenUI 인스턴스들을 딕셔너리에 등록하는 메서드 </summary>
@@ -131,6 +128,11 @@ public class FullscreenUIManager : MonoBehaviour
     public void OnPushFullscreenUI(string UIName)
     {
         Push(UIName);
+    }
+
+    public void OnMain()
+    {
+        Push("Main");
     }
 
     public void OnPause()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class GameManager : MonoBehaviour
     public FullscreenUIManager fullscreenUIManager;
     public HUDManager HUDManager;
 
-    public bool isPaused = false; // 일시정지 여부
+    public bool isPaused; // 일시정지 여부
 
     private void Awake()
     {
@@ -38,6 +39,8 @@ public class GameManager : MonoBehaviour
             Debug.Log("게임 클리어 실패");
             playerHat.PutDownHat();
         }
+
+        Init();
     }
 
     public void OnGameClear()
@@ -48,10 +51,27 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public void Init()
+    {
+        isPaused = true;
+        Time.timeScale = 0f;
+        MouseOn();
+        fullscreenUIManager.OnMain();
+    }
+
+    public void StartGame()
+    {
+        isPaused = false;
+        Time.timeScale = 1f;
+        MouseOff();
+        fullscreenUIManager.OnResume();
+    }
+
     public void PauseGame()
     {
         isPaused = true;
         Time.timeScale = 0f; // 시간 흐름을 멈춤
+        MouseOn();
         fullscreenUIManager.OnPause();
     }
 
@@ -59,6 +79,19 @@ public class GameManager : MonoBehaviour
     {
         isPaused = false;
         Time.timeScale = 1f; // 정상 속도로 돌아옴
+        MouseOff();
         fullscreenUIManager.OnResume();
+    }
+
+    public void MouseOn()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void MouseOff()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }
