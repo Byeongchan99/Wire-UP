@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4270711059992450}
   - component: {fileID: 33234841719116552}
   - component: {fileID: 23048739027453886}
-  - component: {fileID: 64926370280644018}
+  - component: {fileID: 3556665098654347967}
   m_Layer: 0
   m_Name: SM_Prop_Fence_MetalSheet_03
   m_TagString: Untagged
@@ -26,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1254676247812318}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33234841719116552
 MeshFilter:
@@ -84,17 +84,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64926370280644018
-MeshCollider:
+--- !u!65 &3556665098654347967
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1254676247812318}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 628eaec37c487a944aca006a4d8ac697, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43842005184955402, guid: d51fa3c1d26301c409a4e9bbce249339, type: 2}
+  serializedVersion: 3
+  m_Size: {x: 2.5093975, y: 2.3627968, z: 0.3391413}
+  m_Center: {x: -0.00000029802322, y: 1.1813984, z: 0.022913165}
