@@ -83,6 +83,15 @@ public class GameManager : MonoBehaviour
         fullscreenUIManager.OnResume();
     }
 
+    public void ExitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit(); // 어플리케이션 종료
+#endif
+    }
+
     public void MouseOn()
     {
         Cursor.lockState = CursorLockMode.None;

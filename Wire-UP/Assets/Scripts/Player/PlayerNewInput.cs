@@ -78,10 +78,12 @@ public class PlayerNewInput : MonoBehaviour
         SprintInput(value.isPressed);
     }
 
+    /*
     public void OnPause(InputValue value)
     {
         PauseInput(value.isPressed);
     }
+    */
 #endif
 
     public void MoveInput(Vector2 newMoveDirection)
@@ -110,6 +112,7 @@ public class PlayerNewInput : MonoBehaviour
         sprint = newSprintState;
     }
 
+    /*
     public void PauseInput(bool newPauseState)
     {
         if (GameManager.instance.isPaused) // 현재 일시정지 상태라면
@@ -122,7 +125,7 @@ public class PlayerNewInput : MonoBehaviour
         }
     }
 
-    /*
+    
     private void OnApplicationFocus(bool hasFocus)
     {
         SetCursorState(cursorLocked);
