@@ -122,6 +122,7 @@ public class PlayerNewInput : MonoBehaviour
         }
     }
 
+    /*
     private void OnApplicationFocus(bool hasFocus)
     {
         SetCursorState(cursorLocked);
@@ -131,4 +132,5 @@ public class PlayerNewInput : MonoBehaviour
     {
         Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
     }
+    */
 }
