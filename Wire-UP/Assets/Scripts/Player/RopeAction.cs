@@ -34,21 +34,19 @@ public class RopeAction : MonoBehaviour
     [Header("Input")]
     public KeyCode grappleKey = KeyCode.Mouse1;
 
-    // =========================================
-    // 1) 로프가 "날아가는" 효과를 위한 파라미터
+    // 로프가 "날아가는" 효과를 위한 파라미터
     [Header("Rope Travel Settings")]
-    [Tooltip("로프가 목표 지점까지 뻗어나가는 데 걸리는 시간(초)")]
+    [Tooltip("로프가 목표 지점까지 뻗어나가는 데 걸리는 시간")]
     public float ropeExtendDuration = 0.3f;
-    private float _ropeExtendTimer;   // 현재 로프 확장 경과 시간
-    private bool _isExtending;        // 로프가 지금 뻗어가는 중인지 여부
+    private float _ropeExtendTimer; // 현재 로프 확장 경과 시간
+    private bool _isExtending; // 로프가 지금 뻗어가는 중인지 여부
 
-    // =========================================
-    // 2) 로프가 "흔들리는" 효과를 위한 파라미터
+    // 로프가 "흔들리는" 효과를 위한 파라미터
     [Header("Rope Wave Settings")]
     [Tooltip("라인렌더러 상에서 몇 개의 점(세그먼트)을 사용할지")]
     public int ropeSegmentCount = 20;
 
-    [Tooltip("AnimationCurve로 파동(흔들림)을 제어합니다.\nX축=0~1, Y축=진폭(Amplitude) 조절값")]
+    [Tooltip("AnimationCurve로 파동 제어.\nX축 = 0 ~ 1, Y축 = 진폭(Amplitude) 조절값")]
     public AnimationCurve ropeCurve;
 
     [Tooltip("파동이 시간에 따라 흐르는 속도(값이 클수록 빠르게 흐름)")]
@@ -106,9 +104,7 @@ public class RopeAction : MonoBehaviour
         DrawRope();
     }
 
-    // -----------------------------
-    // 실제 그래플 시작 로직
-    // -----------------------------
+    // 그래플 시작
     private void StartGrapple()
     {
         // 쿨타임 중이면 리턴
@@ -141,7 +137,7 @@ public class RopeAction : MonoBehaviour
             _lineRenderer.enabled = true;
             _lineRenderer.positionCount = ropeSegmentCount;
 
-            // 로프가 “날아가기” 시작
+            // 로프가 날아가기 시작
             _ropeExtendTimer = 0f;
             _isExtending = true;
 
@@ -153,9 +149,7 @@ public class RopeAction : MonoBehaviour
         }
     }
 
-    // -----------------------------
     // 그래플 중단(스윙 종료)
-    // -----------------------------
     public void StopGrapple()
     {
         playerController.isSwinging = false;
@@ -177,9 +171,7 @@ public class RopeAction : MonoBehaviour
         _isExtending = false;
     }
 
-    // -----------------------------
-    // 로프 그리기 (LateUpdate)
-    // -----------------------------
+    // 로프 그리기
     private void DrawRope()
     {
         // 연결되지 않았다면 그릴 것 없음
@@ -190,10 +182,12 @@ public class RopeAction : MonoBehaviour
 
         // 로프가 완전히 뻗었는지 체크
         _ropeExtendTimer += Time.deltaTime;
+        
         float extendRatio = 0f;
+
         if (_isExtending)
         {
-            // 0~1로 보정된 확장 비율
+            // 0 ~ 1로 보정된 확장 비율
             extendRatio = Mathf.Clamp01(_ropeExtendTimer / ropeExtendDuration);
             // 1 이상이면 더 이상 확장 중이 아님
             if (extendRatio >= 1f)
@@ -204,24 +198,22 @@ public class RopeAction : MonoBehaviour
         }
         else
         {
-            // 이미 뻗은 뒤에는 1로 유지 (완전히 닿아 있음)
+            // 이미 뻗은 뒤에는 1로 유지(완전히 닿아 있음)
             extendRatio = 1f;
         }
 
-        // 파동(흔들림)을 위한 waveTimer 누적
-        // --> 로프가 완전히 도달한 뒤에도 흔들리게 하고 싶으면 계속 증가
+        // 흔들림을 위한 waveTimer 누적
         _waveTimer += Time.deltaTime * waveSpeed;
 
-        // gunTip -> grapplePoint까지의 기본 정보
-        Vector3 direction = (_grapplePoint - gunTip.position);
+        Vector3 direction = (_grapplePoint - gunTip.position); // gunTip에서 grapplePoint까지의 방향
         float fullDist = direction.magnitude; // 최종 도달해야 할 거리
         direction.Normalize();
 
-        // 수직(Perp) 벡터 계산 (파동을 줄 방향)
+        // 수직 벡터 계산
         Vector3 perp = Vector3.Cross(direction, Vector3.up);
         if (perp.sqrMagnitude < 0.001f)
         {
-            // 만약 평행 관계여서 cross가 0나오면 다른 축으로 교차해본다
+            // 만약 평행 관계여서 cross가 0나오면 다른 축으로 교차
             perp = Vector3.Cross(direction, Vector3.right);
         }
         perp.Normalize();
@@ -229,24 +221,20 @@ public class RopeAction : MonoBehaviour
         // 각 세그먼트별 위치 업데이트
         for (int i = 0; i < ropeSegmentCount; i++)
         {
-            // 0~1 구간에서 현재 세그먼트가 차지하는 비율
+            // 0 ~ 1 구간에서 현재 세그먼트가 차지하는 비율
             float t = (float)i / (ropeSegmentCount - 1);
 
-            // ---------------------------
-            // (1) 로프가 뻗어가는 연출
-            //     전체 거리 중 현재 extendRatio만큼만 사용
-            // ---------------------------
+            // 1. 로프가 뻗어가는 연출 - 전체 거리 중 현재 extendRatio만큼만 사용
             float segmentDist = (fullDist * extendRatio) * t;
-            // 이 세그먼트가 도달할 이론적 위치 (직선상)
+            // 이 세그먼트가 도달할 이론적 위치
             Vector3 basePos = gunTip.position + direction * segmentDist;
 
-            // ---------------------------
-            // (2) 흔들리는 연출 (Wave Offset)
-            //     - t=0 (총 첫 점)일 때는 오프셋=0 (gunTip 고정)
-            //     - t=1 (마지막 점)일 때는 최대 파동
-            //     - ropeCurve를 통해 파동값을 얻고, waveAmplitude * t 로 크기 조절
-            // ---------------------------
+            // 2. 애니메이션 커브를 이용한 로프가 날아갈 때 흔들리는 연출
+            // t = 0 (총 첫 점)일 때는 오프셋 = 0 (gunTip 고정)
+            // t = 1 (마지막 점)일 때는 최대 파동
+            // ropeCurve를 통해 파동값을 얻고, waveAmplitude * t 로 크기 조절
             float curveValue = ropeCurve.Evaluate(t + _waveTimer);
+
             // gunTip 쪽( t=0 )은 0에 가깝게, grapple 쪽( t=1 )은 waveAmplitude에 가깝게
             float waveSize = curveValue * waveAmplitude * t;
 
@@ -256,10 +244,7 @@ public class RopeAction : MonoBehaviour
             // 최종 위치
             Vector3 finalPos = basePos + waveOffset;
 
-            // ---------------------------
-            // (3) 마지막 세그먼트가
-            //     로프가 완전히 뻗은 상태라면 _grapplePoint 에 '딱' 고정
-            // ---------------------------
+            // 3. 마지막 세그먼트가 로프가 완전히 뻗은 상태라면 _grapplePoint에 고정
             if (extendRatio >= 1f && i == ropeSegmentCount - 1)
             {
                 finalPos = _grapplePoint;
@@ -269,13 +254,10 @@ public class RopeAction : MonoBehaviour
             _lineRenderer.SetPosition(i, finalPos);
         }
 
-        // 필요하다면, gunTip 오브젝트 자체를 LookAt(_grapplePoint) 하려면 여기에 추가
-        transform.LookAt(_grapplePoint);
+        transform.LookAt(_grapplePoint); // 총이 그래플 지점을 바라보도록 설정
     }
 
-    // -----------------------------
     // 스윙 중 공중에서 움직임 처리
-    // -----------------------------
     public void airMovement()
     {
         Vector2 moveInput = _input.move;

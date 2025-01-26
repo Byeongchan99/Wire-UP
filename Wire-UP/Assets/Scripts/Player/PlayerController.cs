@@ -527,6 +527,7 @@ public class PlayerController : MonoBehaviour
                         _targetMantlePosition = downwardHit.point;
                         return true; // 맨틀 가능
                     }
+
                     /*
                     만약 캡슐 충돌 검사 때문에 맨틀 동작이 계속 실패한다면 아래 코드로 대체
                     targetMantlePosition = downwardHit.point;
@@ -555,7 +556,6 @@ public class PlayerController : MonoBehaviour
         }
 
         _rigidbody.useGravity = false; // 중력 비활성화
-        //_verticalVelocity = 0f;
 
         Vector3 startPosition = _targetMantlePosition + (transform.up * -1f) + (transform.forward * -0.5f); // 시작 위치 조정
         transform.position = startPosition;
@@ -598,6 +598,7 @@ public class PlayerController : MonoBehaviour
         yield return null;
     }
 
+    // 경사면 위에 있는지 검사
     private bool OnSlope()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out _slopeRayHit, 0.2f, groundLayers))
@@ -615,6 +616,7 @@ public class PlayerController : MonoBehaviour
         return Vector3.ProjectOnPlane(_moveDirection, _slopeRayHit.normal).normalized;
     }
 
+    // 카메라 회전
     private void CameraRotation()
     {
         if (GameManager.instance.isPaused) return;
@@ -632,6 +634,7 @@ public class PlayerController : MonoBehaviour
         cinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + cameraAngleOverride, _cinemachineTargetYaw, 0.0f);
     }
 
+    // 카메라 각도 제한
     private static float ClampAngle(float angle, float min, float max)
     {
         if (angle < -360f) angle += 360f;
