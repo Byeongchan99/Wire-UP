@@ -6192,7 +6192,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Back
+  m_Text: Resume
 --- !u!222 &182985862
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -29804,7 +29804,7 @@ GameObject:
   - component: {fileID: 989837395}
   - component: {fileID: 989837394}
   m_Layer: 5
-  m_Name: Back Button
+  m_Name: Resume Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30438,6 +30438,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1019553097}
   - component: {fileID: 1019553098}
+  - component: {fileID: 1019553099}
   m_Layer: 5
   m_Name: Container
   m_TagString: Untagged
@@ -30481,6 +30482,22 @@ MonoBehaviour:
   fullscreenList:
   - {fileID: 1645435268}
   - {fileID: 313862914}
+--- !u!114 &1019553099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019553096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe89dd34f23a2704589c42dcefdceae8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startButton: {fileID: 1194357876}
+  exitButton: {fileID: 979256327}
+  resumeButton: {fileID: 989837394}
+  restartButton: {fileID: 1807049510}
 --- !u!1001 &1020610774
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35465,8 +35482,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -55923,7 +55940,7 @@ GameObject:
   - component: {fileID: 1807049511}
   - component: {fileID: 1807049510}
   m_Layer: 5
-  m_Name: Exit Button
+  m_Name: Restart(Main) Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55995,7 +56012,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 144232980}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: Init
+        m_MethodName: RestartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

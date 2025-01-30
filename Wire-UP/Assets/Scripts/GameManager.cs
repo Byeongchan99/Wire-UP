@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,24 +24,25 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject); // 두 번째 이후 생성된 GameManager 인스턴스는 삭제
         }
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void Start()
-    {
-        int clearValue = PlayerPrefs.GetInt("GameCleared", 0); // 기본값 0
-
-        if (clearValue == 1)
-        {
-            Debug.Log("게임 클리어");
-            playerHat.PickUpHat();
-        }
-        else
-        {
-            Debug.Log("게임 클리어 실패");
-            playerHat.PutDownHat();
-        }
-
+    {      
         Init();
+    }
+
+    private void OnDestroy()
+    {
+        // 중복 등록/메모리 누수 방지
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 씬이 로드된 후, 새로 생성된 FullscreenUIManager 찾아서 할당
+        fullscreenUIManager = FindObjectOfType<FullscreenUIManager>();      
     }
 
     public void OnGameClear()
@@ -53,10 +55,24 @@ public class GameManager : MonoBehaviour
 
     public void Init()
     {
+        Debug.Log("게임 초기화");
+        int clearValue = PlayerPrefs.GetInt("GameCleared");
+
+        if (clearValue == 1)
+        {
+            Debug.Log("게임 클리어");
+            playerHat.PickUpHat();
+        }
+        else
+        {
+            Debug.Log("게임 클리어 실패");
+            playerHat.PutDownHat();
+        }
+
         isPaused = true;
         Time.timeScale = 0f;
         MouseOn();
-        fullscreenUIManager.OnMain();
+        //fullscreenUIManager.OnMain();
     }
 
     public void StartGame()
@@ -81,6 +97,14 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f; // 정상 속도로 돌아옴
         MouseOff();
         fullscreenUIManager.OnResume();
+    }
+
+    public void RestartGame()
+    {
+        Debug.Log("게임 재시작");
+        //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Init();
     }
 
     public void ExitGame()

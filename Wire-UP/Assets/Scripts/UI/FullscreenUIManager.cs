@@ -51,12 +51,15 @@ public class FullscreenUIManager : MonoBehaviour
     /// <summary> 초기화 </summary>
     private void Init()
     {
+        Debug.Log("FullscreenUIManager 초기화");
         // 리스트의 FullscreenUI 인스턴스들을 딕셔너리에 등록 및 비활성화
         foreach (var fullscreen in fullscreenList)
         {
             RegisterUI(fullscreen.gameObject.name, fullscreen);
             fullscreen.gameObject.SetActive(false);
         }
+
+        OnMain();
     }
 
     /// <summary> FullscreenUI 인스턴스들을 딕셔너리에 등록하는 메서드 </summary>
