@@ -18,6 +18,10 @@ public class ButtonBinder : MonoBehaviour
             startButton.onClick.RemoveAllListeners();
         if (exitButton != null)
             exitButton.onClick.RemoveAllListeners();
+        if (resumeButton != null)
+            resumeButton.onClick.RemoveAllListeners();
+        if (restartButton != null)
+            restartButton.onClick.RemoveAllListeners();
 
         // Start ¹öÆ°
         if (startButton != null)
