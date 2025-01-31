@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
 
         if (clearValue == 1)
         {
-            Debug.Log("게임 클리어");
+            Debug.Log("게임 클리어 성공");
             playerHat.PickUpHat();
         }
         else

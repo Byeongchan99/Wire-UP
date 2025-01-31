@@ -22,6 +22,7 @@ public class Hat : MonoBehaviour
         if (other.tag == "Player")
         {
             PlayerHat playerHat = other.GetComponent<PlayerHat>();
+            GameManager.instance.OnGameClear(); // 게임 클리어 저장
             playerHat.PickUpHat();
             Destroy(gameObject);
         }

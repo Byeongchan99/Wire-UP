@@ -6,20 +6,22 @@ public class PlayerHat : MonoBehaviour
 {
     public GameObject hat;
 
-    private void Start()
+    private void Awake()
     {
-        hat.SetActive(false);
+        Debug.Log("모자 할당");
+        hat = GameObject.Find("Player Hat").gameObject;
     }
-    
+
     // 모자 획득 시 호출
     public void PickUpHat()
     {
+        Debug.Log("모자 착용");
         hat.SetActive(true);
-        GameManager.instance.OnGameClear(); // 게임 클리어
     }
 
     public void PutDownHat()
     {
+        Debug.Log("모자 제거");
         hat.SetActive(false);
     }
 }
