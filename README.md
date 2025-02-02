@@ -47,22 +47,42 @@ Window로 빌드되어 아래 사이트에서 다운받아 직접 플레이해�
 
 플레이어는 파쿠르 동작과 스윙 액션을 활용하여 최대한 높이, 그리고 빠르게 올라가야 합니다.
 
+### 기획 및 설계
+
+[와이어 업 기획 및 설계](https://www.notion.so/1334e320564d80debea0c690418888fc?pvs=4)
+
 </br>
 
 # 주요 기능
 
 1. **파쿠르 동작**
 
+<br/>
+
 ![Image](https://github.com/user-attachments/assets/4d646be9-4b88-4ba5-b879-0febe3f50a00)
+
+<br/>
 
 ![Image](https://github.com/user-attachments/assets/ff4fe55e-3524-4ae6-a3da-af1072e9cdac)
 
+<br/>
+
 [와이어 업 개발 일지 1 - 기본 동작 구현(파쿠르, 경사로 이동)](https://www.notion.so/1-1574e320564d803f8de3eeef35d9d668?pvs=4) 
+
+<br/>
 
 2. **스윙 액션**
 
+<br/>
+
 ![Image](https://github.com/user-attachments/assets/9adcdee7-5631-4fd0-ad89-b3e8aac51a99)
+
+<br/>
 
 ![Image](https://github.com/user-attachments/assets/b590d08c-1a3a-4a42-90b5-70b7a3e06d61)
 
+<br/>
+
 [와이어 업 개발 일지 2 - 스윙 액션](https://www.notion.so/2-15e4e320564d80bfbda0ec141dafe51c?pvs=4) 
+
+<br/>
