@@ -91,12 +91,17 @@ Window로 빌드되어 아래 사이트에서 다운받아 직접 플레이해�
 
 [와이어 업 개발 개선점 및 아쉬웠던 점](https://www.notion.so/1864e320564d80958debe83da4937d6f?pvs=21) 
 
+<br/>
+
 - 물리 기반 캐릭터 컨트롤러 구현하기
     - Character Controller, Rigidbody 다뤄보기
     - 경사로 움직임 구현하기
     - 마찰력, 중력, 속력, 질량 다루기
     - Spring Joint로 스윙 액션 구현하기
     - Raycast로 파쿠르 동작 구현하기
+
+<br/>
+
 - 최적화 기법 다뤄보기
     - 중요하지 않은 게임 오브젝트들 삭제
     - 복잡한 Mesh Collider를 단순한 형태의 Box Collider로 변경
@@ -104,3 +109,5 @@ Window로 빌드되어 아래 사이트에서 다운받아 직접 플레이해�
     - Occlusion Culling 적용
     - Baked Lighting 적용
     - LOD(Level of Detail) 적용 - 멀어지면 Culled되어 렌더링되지 않음
+
+<br/>
