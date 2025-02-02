@@ -40,6 +40,7 @@ Window로 빌드되어 아래 사이트에서 다운받아 직접 플레이해�
 # 게임 구조
 
 ![Image](https://github.com/user-attachments/assets/31a4e610-871a-4dbd-a6dd-7463f7647534)
+
 게임의 전체적인 구조입니다.
 
 3개의 일반 스테이지와 엔딩 이벤트를 볼 수 있는 엔딩 스테이지가 있습니다.
@@ -50,20 +51,18 @@ Window로 빌드되어 아래 사이트에서 다운받아 직접 플레이해�
 
 # 주요 기능
 
-1. **플레이어 근접 공격 구현**
+1. **파쿠르 동작**
 
-![PlayerAttack-ezgif com-resize](https://github.com/user-attachments/assets/89d706dd-75cd-4833-9762-60a7233e4d84)
+![Image](https://github.com/user-attachments/assets/4d646be9-4b88-4ba5-b879-0febe3f50a00)
 
-[룬 크로니클 개발 일지 7 - 공격 로직 및 무기 구현(1)](https://www.notion.so/7-1-0432376d0f0d4fd4a56f20c7104dcb8d?pvs=21) 
+![Image](https://github.com/user-attachments/assets/ff4fe55e-3524-4ae6-a3da-af1072e9cdac)
 
-2. **일반 몬스터 구현**
+[와이어 업 개발 일지 1 - 기본 동작 구현(파쿠르, 경사로 이동)](https://www.notion.so/1-1574e320564d803f8de3eeef35d9d668?pvs=4) 
 
-![ChaseState](https://github.com/user-attachments/assets/f78ffbb9-fb10-4d19-97b0-5871953ae22e)
+2. **스윙 액션**
 
-[룬 크로니클 개발 일지 12 - 일반 몬스터](https://www.notion.so/12-3e4accb6fc904a8693b47f92cda9f706?pvs=21) 
+![Image](https://github.com/user-attachments/assets/9adcdee7-5631-4fd0-ad89-b3e8aac51a99)
 
-3. **보스 몬스터 구현**
+![Image](https://github.com/user-attachments/assets/b590d08c-1a3a-4a42-90b5-70b7a3e06d61)
 
-![BossPattern4-ezgif com-crop](https://github.com/user-attachments/assets/0589c770-71e9-4852-a30d-56881169b30e)
-
-[룬 크로니클 개발 일지 13 - 보스 몬스터](https://www.notion.so/13-5861509670d245d89bd742d0a0ced42e?pvs=21)
+[와이어 업 개발 일지 2 - 스윙 액션](https://www.notion.so/2-15e4e320564d80bfbda0ec141dafe51c?pvs=4) 
