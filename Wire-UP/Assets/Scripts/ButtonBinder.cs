@@ -10,6 +10,7 @@ public class ButtonBinder : MonoBehaviour
     public Button exitButton;
     public Button resumeButton;
     public Button restartButton;
+    public Button resetPrefsButton;
 
     private void Awake()
     {
@@ -22,6 +23,8 @@ public class ButtonBinder : MonoBehaviour
             resumeButton.onClick.RemoveAllListeners();
         if (restartButton != null)
             restartButton.onClick.RemoveAllListeners();
+        if (resetPrefsButton != null)
+            resetPrefsButton.onClick.RemoveAllListeners();
 
         // Start 버튼
         if (startButton != null)
@@ -56,6 +59,15 @@ public class ButtonBinder : MonoBehaviour
             restartButton.onClick.AddListener(() =>
             {
                 GameManager.instance.RestartGame();
+            });
+        }
+
+        // Reset 버튼
+        if (resetPrefsButton != null)
+        {
+            resetPrefsButton.onClick.AddListener(() =>
+            {
+                GameManager.instance.ResetAllPrefs();
             });
         }
     }

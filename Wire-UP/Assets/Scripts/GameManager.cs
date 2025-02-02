@@ -19,18 +19,17 @@ public class GameManager : MonoBehaviour
         {
             instance = this; // 첫 번째 생성된 GameManager 인스턴스에 대해 전역 변수 할당
             DontDestroyOnLoad(gameObject); // 씬 전환이 되더라도 삭제되지 않게 함
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
             Destroy(gameObject); // 두 번째 이후 생성된 GameManager 인스턴스는 삭제
         }
-
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void Start()
     {      
-        Init();
+
     }
 
     private void OnDestroy()
@@ -42,7 +41,10 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         // 씬이 로드된 후, 새로 생성된 FullscreenUIManager 찾아서 할당
-        fullscreenUIManager = FindObjectOfType<FullscreenUIManager>();      
+        fullscreenUIManager = FindObjectOfType<FullscreenUIManager>();
+        playerHat = FindObjectOfType<PlayerHat>();
+
+        Init();
     }
 
     public void OnGameClear()
@@ -57,6 +59,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("게임 초기화");
         int clearValue = PlayerPrefs.GetInt("GameCleared");
+        playerHat.Init();
 
         if (clearValue == 1)
         {
@@ -104,7 +107,6 @@ public class GameManager : MonoBehaviour
         Debug.Log("게임 재시작");
         //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        Init();
     }
 
     public void ExitGame()
@@ -114,6 +116,14 @@ public class GameManager : MonoBehaviour
 #else
         Application.Quit(); // 어플리케이션 종료
 #endif
+    }
+
+    public void ResetAllPrefs()
+    {
+        Debug.Log("모든 PlayerPrefs 초기화");
+        PlayerPrefs.SetInt("GameCleared", 0);
+        PlayerPrefs.Save();
+        RestartGame();
     }
 
     public void MouseOn()

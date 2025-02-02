@@ -6,7 +6,7 @@ public class PlayerHat : MonoBehaviour
 {
     public GameObject hat;
 
-    private void Awake()
+    public void Init()
     {
         Debug.Log("모자 할당");
         hat = GameObject.Find("Player Hat").gameObject;
