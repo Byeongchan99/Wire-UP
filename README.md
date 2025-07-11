@@ -1,4 +1,3 @@
-# first-unity-project
 # 프로젝트 소개
 
 개인 프로젝트로 제작한 Unity 기반 3D 플랫포머 게임입니다.
