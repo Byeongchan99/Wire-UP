@@ -27,10 +27,6 @@ Window로 빌드되어 아래 사이트에서 다운받아 직접 플레이해�
 
 [와이어 업](https://harrrypoter.itch.io/wire-up)
 
-### GitHub Repository
-
-[https://github.com/Byeongchan99/first-unity-project](https://github.com/Byeongchan99/Wire-UP)
-
 ### 플레이 영상
 
 [와이어 업 플레이 영상](https://youtu.be/SaEnooSEL6w?si=wKoJR3-56rKfwwWn)
